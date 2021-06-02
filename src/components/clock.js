@@ -4,8 +4,8 @@ class DigitalClock extends Component {
     constructor(props) {
         super(props);
         this.startTime = this.props.start instanceof Date ? this.props.start : new Date();
-        this.off = isNaN(this.props.off) ? 0 : this.props.off * 1;
-        this.startTime.setTime(this.startTime.getTime() + this.off);
+        this.startTimeOffset = this.props.start instanceof Date ? new Date().getTime() - this.startTime.getTime() : 0;
+
         this.depths = [
             { clss: '-day', int: 86400000 },
             { clss: '-hr', int: 3600000, foo: (time, mil) => mil ? time.getHours().toString().padStart(2, '0') : time.getHours() % 12 || 12 },
@@ -20,31 +20,33 @@ class DigitalClock extends Component {
                 sep: '.'
             },
         ];
-        this.int = this.props
-        this.state = this.timeObj(this.startTime, this.int);
+
+        this.state = this.timeObj(this.startTime, this.startTimeOffset);
     }
 
     componentDidMount() {
         setInterval(this.tic, this.state.int)
     }
 
-    timeObj = (time) => {
+    timeObj = (time, start) => {
         let acc = (this.props.acc > -1 && this.props.acc < 7) ? this.props.acc : 2;
         let rng = acc > 4 ? 4 : acc;
         return {
+            start,
             time,
             int: this.depths[rng].int,
             isMil: this.props.mil ? true : false,
             showMer: this.props.mer ? true : false,
             mer: this.props.mil ? 'hours' : time.getHours() > 11 ? 'am' : 'pm',
             acc,
-            showDate: this.props.date ? true : false
+            showDate: this.props.date ? true : false,
+            off: isNaN(this.props.off) ? 0 : this.props.off * 1,
         }
     }
 
 
     tic = () => {
-        this.setState(state => ({ time: new Date(state.time.getTime() + state.int) }));
+        this.setState(state => ({ time: new Date(new Date().getTime() + this.state.off + this.state.start) }));
     }
 
     render() {
