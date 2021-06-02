@@ -7,7 +7,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <DigitalClock acc={3} />
+        <DigitalClock acc={6} mer={true} mil={true} />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
