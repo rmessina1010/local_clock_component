@@ -9,15 +9,13 @@ class DigitalClock extends Component {
         this.depths = [
             { clss: '-day', int: 86400000 },
             { clss: '-hr', int: 3600000, foo: (time, mil) => mil ? time.getHours().toString().padStart(2, '0') : time.getHours() % 12 || 12 },
-            { clss: '-min', int: 60000, foo: (time) => time.getMinutes().toString().padStart(2, '0'), sep: ':' },
-            { clss: '-sec', int: 1000, foo: (time) => time.getSeconds().toString().padStart(2, '0'), sep: ':' },
+            { clss: '-min', int: 60000, foo: (time) => time.getMinutes().toString().padStart(2, '0'), sep: this.props.minsep || ':' },
+            { clss: '-sec', int: 1000, foo: (time) => time.getSeconds().toString().padStart(2, '0'), sep: this.props.secsep || ':' },
             {
                 clss: '-mil', int: 10 ** (6 - this.props.acc), foo: (time) => {
-                    let tens = 10 ** (6 - this.props.acc);
-                    let places = this.props.acc - 3;
-                    return Math.round(time.getMilliseconds() / tens).toString().padStart(places, '0').substr(0, tens + 1)
+                    return time.getMilliseconds().toString().padStart(3, '0').substr(0, this.props.acc - 3);
                 },
-                sep: '.'
+                sep: this.props.milsep || '.'
             },
         ];
 
