@@ -27,6 +27,7 @@ class DigitalClock extends Component {
         this.intialTic();
     }
 
+
     intialTic() {
         let acc = (this.props.acc > -1 && this.props.acc < 7) ? this.props.acc : 2;
         let rng = acc > 4 ? 4 : acc;
@@ -47,11 +48,7 @@ class DigitalClock extends Component {
             start,
             time,
             int: this.depths[rng].int,
-            isMil: this.props.mil ? true : false,
-            showMer: this.props.mer ? true : false,
-            mer: this.props.mil ? 'hours' : time.getHours() > 11 ? 'pm' : 'am',
             acc,
-            showDate: this.props.date ? true : false,
             off: isNaN(this.props.off) ? 0 : this.props.off * 1,
         }
     }
@@ -59,11 +56,13 @@ class DigitalClock extends Component {
     render() {
         let parts = [];
         console.log(this.state.time)
-        for (let i = this.state.showDate ? 0 : 1, rng = this.state.acc < 4 ? this.state.acc : 4; i <= rng; i++) {
+        for (let i = this.props.date ? 0 : 1, rng = this.state.acc < 4 ? this.state.acc : 4; i <= rng; i++) {
             let dobj = this.depths[i];
-            parts.push(<span key={'clock' + dobj.class} className={'clock' + dobj.class}>{(dobj.sep || '') + dobj.foo(this.state.time, this.state.isMil)}</span>)
+            parts.push(<span key={'clock' + dobj.class} className={'clock' + dobj.class}>{(dobj.sep || '') + dobj.foo(this.state.time, this.props.mil)}</span>)
         }
-        if (this.state.showMer) { parts.push((<span key='clock-mer' className='clock-mer'>{this.state.mer}</span>)) }
+        if (this.props.mer) {
+            parts.push((<span key='clock-mer' className='clock-mer'> {this.props.mil ? 'hours' : this.state.time.getHours() > 11 ? 'pm' : 'am'}</span>))
+        }
         return (<div {...this.props.attrs}>{parts}</div >)
     }
 }
