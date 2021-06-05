@@ -8,7 +8,7 @@ class ClockWrap extends Component {
         this.state = {
             mer: true,
             mil: false,
-            date: { weekday: 'long', day: '2-digit', month: 'long' }
+            date: { weekday: 'short' }
         }
 
     }
@@ -20,7 +20,7 @@ class ClockWrap extends Component {
     }
     handleDate = () => {
         this.setState(oldState => {
-            return { date: oldState.date ? false : { weekday: 'long', day: '2-digit', month: 'long', year: "numeric" } }
+            return { date: oldState.date ? false : { weekday: 'short' } }
         });
     }
 

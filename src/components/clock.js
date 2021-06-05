@@ -8,7 +8,17 @@ class DigitalClock extends Component {
         this.theTic = null;
 
         this.depths = [
-            { class: '-day', int: 86400000, foo: (time, opts) => time.toLocaleDateString(opts.mode || 'en-US', opts) },
+            {
+                class: '-day', int: 86400000, foo: (time, opts) => {
+                    let mode = opts.mode || 'en-US';
+                    let dayParts = []
+                    if (opts.weekday) { dayParts.push(<span className='clock-weekday'>{time.toLocaleDateString(mode, { weekday: opts.weekday })}</span>) }
+                    if (opts.month || opts.day) { dayParts.push(<span className='clock-date'>{time.toLocaleDateString(mode, { month: opts.month || null, day: opts.day || null })}</span>) }
+                    if (opts.year) { dayParts.push(<span className='clock-year'>{time.toLocaleDateString(mode, { year: opts.year })}</span>) }
+                    if (dayParts.length) { dayParts.push(' '); }
+                    return dayParts;
+                }
+            },
             { class: '-hr', int: 3600000, foo: (time, mil) => mil ? time.getHours().toString().padStart(2, '0') : time.getHours() % 12 || 12 },
             { class: '-min', int: 60000, foo: (time) => time.getMinutes().toString().padStart(2, '0'), sep: this.props.minsep || ':' },
             { class: '-sec', int: 1000, foo: (time) => time.getSeconds().toString().padStart(2, '0'), sep: this.props.secsep || ':' },
@@ -61,7 +71,7 @@ class DigitalClock extends Component {
             let aux = null;
             if (dobj.class === '-hr') { aux = this.props.mil || null; }
             if (dobj.class === '-day') { aux = this.props.date; }
-            parts.push(<span key={'clock' + dobj.class} className={'clock' + dobj.class}>{(dobj.sep || '') + dobj.foo(this.state.time, aux)}</span>)
+            parts.push(<span key={'clock' + dobj.class} className={'clock' + dobj.class}>{(dobj.sep || '')}{dobj.foo(this.state.time, aux)}</span>)
         }
         if (this.props.mer) {
             parts.push((<span key='clock-mer' className='clock-mer'> {this.props.mil ? 'hours' : this.state.time.getHours() > 11 ? 'pm' : 'am'}</span>))
