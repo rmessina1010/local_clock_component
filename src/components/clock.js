@@ -12,8 +12,8 @@ class DigitalClock extends Component {
                 class: '-day', int: 86400000, foo: (time, opts) => {
                     let mode = opts.mode || 'en-US';
                     let dayParts = []
-                    if (opts.weekday) { dayParts.push(<span className='clock-weekday'>{time.toLocaleDateString(mode, { weekday: opts.weekday })}</span>) }
-                    if (opts.month || opts.day) { dayParts.push(<span className='clock-date'>{time.toLocaleDateString(mode, { month: opts.month || null, day: opts.day || null })}</span>) }
+                    if (opts.weekday) { dayParts.push(<span className='clock-weekday'>{time.toLocaleDateString(mode, { weekday: opts.weekday }) + (opts.wdsep || '')}</span>) }
+                    if (opts.month || opts.day) { dayParts.push(<span className='clock-date'>{time.toLocaleDateString(mode, { month: opts.month || null, day: opts.day || null }) + (opts.mdsep || '')}</span>) }
                     if (opts.year) { dayParts.push(<span className='clock-year'>{time.toLocaleDateString(mode, { year: opts.year })}</span>) }
                     if (dayParts.length) { dayParts.push(' '); }
                     return dayParts;

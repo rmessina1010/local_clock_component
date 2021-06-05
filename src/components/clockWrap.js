@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import DigitalClock from './clock';
 
-
+const dateOpts = { weekday: 'short', wdsep: '. ,' };
 class ClockWrap extends Component {
     constructor(props) {
         super(props);
         this.state = {
             mer: true,
             mil: false,
-            date: { weekday: 'short' }
+            date: dateOpts
         }
 
     }
@@ -20,15 +20,15 @@ class ClockWrap extends Component {
     }
     handleDate = () => {
         this.setState(oldState => {
-            return { date: oldState.date ? false : { weekday: 'short' } }
+            return { date: oldState.date ? false : dateOpts }
         });
     }
 
     render() {
         return (<div>
-            <button name="mil" onClick={this.handleClick}>toggle mil</button>
-            <button name="mer" onClick={this.handleClick}>toggle show</button>
-            <button name="date" onClick={this.handleDate}>toggle day</button>
+            <button name="mil" onClick={this.handleClick}>toggle 24H</button>
+            <button name="mer" onClick={this.handleClick}>toggle show meridian</button>
+            <button name="date" onClick={this.handleDate}>toggle date info</button>
             <DigitalClock mer={this.state.mer} mil={this.state.mil} acc={3} date={this.state.date} />
         </div>)
     }
