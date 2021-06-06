@@ -70,7 +70,7 @@ class DigitalClock extends Component {
             before = React.cloneElement(this.props.preCont, { parState: this.state })
         }
         if (this.props.postCont) {
-            before = React.cloneElement(this.props.postCont, { parState: this.state })
+            aft = React.cloneElement(this.props.postCont, { parState: this.state })
         }
         console.log(this.state.time)
         for (let i = this.props.date ? 0 : 1, rng = this.state.acc < 4 ? this.state.acc : 4; i <= rng; i++) {
@@ -85,7 +85,7 @@ class DigitalClock extends Component {
         }
         return (
             <div className={'clock-outer-wrap '} {...this.props.outerAttrs}>
-                {before || null}
+                {this.props.preCont || null}
                 <div className='clock-inner-wrap'{...this.props.innerAttrs}>{parts}</div>
                 {aft || null}
             </div>
