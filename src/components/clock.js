@@ -65,6 +65,13 @@ class DigitalClock extends Component {
 
     render() {
         let parts = [];
+        let before, aft;
+        if (this.props.preCont) {
+            before = React.cloneElement(this.props.preCont, { parState: this.state })
+        }
+        if (this.props.postCont) {
+            before = React.cloneElement(this.props.postCont, { parState: this.state })
+        }
         console.log(this.state.time)
         for (let i = this.props.date ? 0 : 1, rng = this.state.acc < 4 ? this.state.acc : 4; i <= rng; i++) {
             let dobj = this.depths[i];
@@ -76,7 +83,13 @@ class DigitalClock extends Component {
         if (this.props.mer) {
             parts.push((<span key='clock-mer' className='clock-mer'> {this.props.mil ? 'hours' : this.state.time.getHours() > 11 ? 'pm' : 'am'}</span>))
         }
-        return (<div {...this.props.attrs}>{parts}</div >)
+        return (
+            <div className={'clock-outer-wrap '} {...this.props.outerAttrs}>
+                {before || null}
+                <div className='clock-inner-wrap'{...this.props.innerAttrs}>{parts}</div>
+                {aft || null}
+            </div>
+        )
     }
 }
 
