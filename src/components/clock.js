@@ -65,14 +65,20 @@ class DigitalClock extends Component {
 
     render() {
         let parts = [];
-        let before, aft;
+        let bef, aft = null;
         if (this.props.preCont) {
-            before = React.cloneElement(this.props.preCont, { parState: this.state })
+            bef = React.cloneElement(this.props.preCont, { parState: this.state })
         }
         if (this.props.postCont) {
             aft = React.cloneElement(this.props.postCont, { parState: this.state })
         }
-        console.log(this.state.time)
+
+        let pmClass = this.state.time.getHours() > 11 ? 'is-pm' : 'is-am';
+        let hourClass = 'hour-' + this.state.time.getHours();
+        let dayClass = 'day-' + this.state.time.getDay();
+        let monthClass = 'month-' + this.state.time.getMonth();
+        let timeZone = 'tz-' + this.state.time.toTimeString();////
+
         for (let i = this.props.date ? 0 : 1, rng = this.state.acc < 4 ? this.state.acc : 4; i <= rng; i++) {
             let dobj = this.depths[i];
             let aux = null;
@@ -81,13 +87,13 @@ class DigitalClock extends Component {
             parts.push(<span key={'clock' + dobj.class} className={'clock' + dobj.class}>{(dobj.sep || '')}{dobj.foo(this.state.time, aux)}</span>)
         }
         if (this.props.mer) {
-            parts.push((<span key='clock-mer' className='clock-mer'> {this.props.mil ? 'hours' : this.state.time.getHours() > 11 ? 'pm' : 'am'}</span>))
+            parts.push((<span key='clock-mer' className='clock-mer'> {this.props.mil ? 'hours' : (pmClass === 'is-pm' ? 'pm' : 'am')}</span>))
         }
         return (
-            <div className={'clock-outer-wrap '} {...this.props.outerAttrs}>
-                {this.props.preCont || null}
+            <div className={`clock-outer-wrap ${pmClass} ${hourClass} ${dayClass} ${monthClass}`} {...this.props.outerAttrs}>
+                {bef}
                 <div className='clock-inner-wrap'{...this.props.innerAttrs}>{parts}</div>
-                {aft || null}
+                {aft}
             </div>
         )
     }
