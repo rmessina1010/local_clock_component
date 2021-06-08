@@ -77,7 +77,6 @@ class DigitalClock extends Component {
         let hourClass = 'hour-' + this.state.time.getHours();
         let dayClass = 'day-' + this.state.time.getDay();
         let monthClass = 'month-' + this.state.time.getMonth();
-        let timeZone = 'tz-' + this.state.time.toTimeString();////
 
         for (let i = this.props.date ? 0 : 1, rng = this.state.acc < 4 ? this.state.acc : 4; i <= rng; i++) {
             let dobj = this.depths[i];
@@ -96,6 +95,72 @@ class DigitalClock extends Component {
                 {aft}
             </div>
         )
+    }
+}
+
+export class StopWatch extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            time: 0,
+            start: true
+        }
+        this.ints = [604800000, 86400000, 3600000, 60000, 1000, 100, 10, 1];
+        this.segs = ['week', 'day', 'hr', 'min', 'sec', 'mil'];
+        this.theTic = null;
+    }
+
+    reset = () => {
+        if (this.theTic) {
+            clearInterval(this.theTic);
+            this.theTic = null;
+        }
+        this.setState({
+            time: 0,
+            start: true
+        });
+    }
+
+    startTicking = () => {
+        let acc = this.props.acc || 4;
+        this.theTic = setInterval(this.tic, this.ints[acc]);
+    }
+
+    toggleStart = () => {
+        if (this.theTic) {
+            clearInterval(this.theTic);
+            this.theTic = null;
+        } else { this.startTicking(); }
+        this.setState((prevState) => ({ start: !prevState.start }));
+    }
+
+    tic = () => {
+        let acc = this.props.acc || 4;
+        this.setState(prevState => ({ time: prevState.time + this.ints[acc] }));
+    }
+
+    render() {
+        let timeOutput = [];
+        let sep = '';
+        let minim = this.props.top || 0;
+        let prevInt = this.ints[minim];
+        for (let i = minim, max = this.props.acc || this.ints.length - 1; i < max; i++) {
+            timeOutput.push(
+                <span className={"clock-" + this.segs[i]}>{sep}{Math.floor(this.state.time / this.ints[i]) % prevInt}</span>
+            )
+            sep = ":";
+            prevInt = this.ints[i]
+        }
+        return (
+            <div className='clock-outer-wrap' {...this.props.Attrs}>
+                <div className='clock-inner-wrap' {...this.props.Attrs}>{timeOutput}</div>
+                <div className="timer-controls">
+                    <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? 'Continue' : 'Start') : 'Pause'} </button>
+                    <button type="button" className="reset" onClick={this.reset}>Reset</button>
+                </div>
+            </div>
+        );
     }
 }
 

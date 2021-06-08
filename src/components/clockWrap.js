@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import DigitalClock from './clock';
+import DigitalClock, { StopWatch } from './clock';
 
-function TEST_element(props) {
+function TestElement(props) {
     return (<b>{props.parState.time.toString()}HEHEHEH{props.x}</b>)
 }
 
 const dateOpts = { weekday: 'short', wdsep: '. ,' };
+
 class ClockWrap extends Component {
     constructor(props) {
         super(props);
@@ -30,10 +31,11 @@ class ClockWrap extends Component {
 
     render() {
         return (<div>
+            <StopWatch acc={6} />
             <button name="mil" onClick={this.handleClick}>toggle 24H</button>
             <button name="mer" onClick={this.handleClick}>toggle show meridian</button>
             <button name="date" onClick={this.handleDate}>toggle date info</button>
-            <DigitalClock mer={this.state.mer} mil={this.state.mil} acc={3} date={this.state.date} postCont={<TEST_element x="?!!!" />} />
+            <DigitalClock mer={this.state.mer} mil={this.state.mil} acc={3} date={this.state.date} postCont={<TestElement x="?!!!" />} />
         </div>)
     }
 
