@@ -136,25 +136,26 @@ export class StopWatch extends Component {
     }
 
     tic = () => {
-        let acc = this.props.acc || 4;
+        let acc = this.props.acc || 5;
         this.setState(prevState => ({ time: prevState.time + this.ints[acc] }));
     }
 
     render() {
-        let timeOutput = [];
+        let seggedTime = [];
         let sep = '';
         let minim = this.props.top || 0;
-        let prevInt = this.ints[minim];
+        let prevInt = this.ints[this.ints.length - (minim + 1)];
         for (let i = minim, max = this.props.acc || this.ints.length - 1; i < max; i++) {
-            timeOutput.push(
-                <span className={"clock-" + this.segs[i]}>{sep}{Math.floor(this.state.time / this.ints[i]) % prevInt}</span>
+            let timeValue = (Math.floor(this.state.time % prevInt / this.ints[i]));
+            seggedTime.push(
+                <span className={"clock-" + this.segs[i]}>{sep}{timeValue}</span>
             )
             sep = ":";
             prevInt = this.ints[i]
         }
         return (
             <div className='clock-outer-wrap' {...this.props.Attrs}>
-                <div className='clock-inner-wrap' {...this.props.Attrs}>{timeOutput}</div>
+                <div className='clock-inner-wrap' {...this.props.Attrs}>{seggedTime}</div>
                 <div className="timer-controls">
                     <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? 'Continue' : 'Start') : 'Pause'} </button>
                     <button type="button" className="reset" onClick={this.reset}>Reset</button>
