@@ -106,7 +106,7 @@ export class StopWatch extends Component {
             time: 0,
             start: true
         }
-        this.ints = [604800000, 86400000, 3600000, 60000, 1000, 100, 10, 1];
+        this.ints = [604800000, 86400000, 3600000, 60000, 1000, 100, 10];
         this.segs = ['week', 'day', 'hr', 'min', 'sec', 'mil'];
         this.theTic = null;
     }
@@ -122,9 +122,11 @@ export class StopWatch extends Component {
         });
     }
 
+    getAcc = () => { return this.props.acc >= 0 && this.props.acc < this.ints.length ? this.props.acc : 4; }
+
     startTicking = () => {
-        let acc = this.props.acc || 4;
-        this.theTic = setInterval(this.tic, this.ints[acc]);
+        let acc = this.getAcc();
+        this.theTic = setInterval(this.tic, this.ints[acc] - 1);
     }
 
     toggleStart = () => {
@@ -136,26 +138,31 @@ export class StopWatch extends Component {
     }
 
     tic = () => {
-        let acc = this.props.acc || 5;
+        let acc = this.getAcc();
         this.setState(prevState => ({ time: prevState.time + this.ints[acc] }));
     }
 
     render() {
         let seggedTime = [];
         let sep = '';
+        let decPoint = this.ints.length - 2;// where 2 is the amount of digits before the decimal pt.
         let minim = this.props.top || 0;
         let prevInt = this.ints[this.ints.length - (minim + 1)];
-        for (let i = minim, max = this.props.acc || this.ints.length - 1; i < max; i++) {
-            let timeValue = (Math.floor(this.state.time % prevInt / this.ints[i]));
+        let acc = this.getAcc();
+        for (let i = minim, max = acc >= decPoint ? decPoint : acc; i < max + 1; i++) {
+            let padding = this.ints[i] < 86400000 ? 2 : 0;
+            let timeValue = this.ints[i] < 1000 ? (this.state.time % 1000) : (Math.floor(this.state.time % prevInt / this.ints[i]));
+            timeValue = timeValue.toString().padStart(padding, '0');
+            if (this.ints[i] < 1000) { timeValue = timeValue.substr(0, acc - decPoint + 1); }
             seggedTime.push(
                 <span className={"clock-" + this.segs[i]}>{sep}{timeValue}</span>
             )
-            sep = ":";
-            prevInt = this.ints[i]
+            sep = this.ints[i] > 1000 ? ":" : ".";
+            prevInt = this.ints[i];
         }
         return (
             <div className='clock-outer-wrap' {...this.props.Attrs}>
-                <div className='clock-inner-wrap' {...this.props.Attrs}>{seggedTime}</div>
+                <div className="clock-inner-wrap" {...this.props.Attrs}>{seggedTime}</div>
                 <div className="timer-controls">
                     <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? 'Continue' : 'Start') : 'Pause'} </button>
                     <button type="button" className="reset" onClick={this.reset}>Reset</button>
