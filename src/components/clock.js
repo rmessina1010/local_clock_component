@@ -20,13 +20,13 @@ class DigitalClock extends Component {
                 }
             },
             { class: '-hr', int: 3600000, foo: (time, mil) => mil ? time.getHours().toString().padStart(2, '0') : time.getHours() % 12 || 12 },
-            { class: '-min', int: 60000, foo: (time) => time.getMinutes().toString().padStart(2, '0'), sep: this.props.minsep || ':' },
-            { class: '-sec', int: 1000, foo: (time) => time.getSeconds().toString().padStart(2, '0'), sep: this.props.secsep || ':' },
+            { class: '-min', int: 60000, foo: (time) => time.getMinutes().toString().padStart(2, '0'), sep: this.props.minsep !== undefined ? this.props.minsep : ':' },
+            { class: '-sec', int: 1000, foo: (time) => time.getSeconds().toString().padStart(2, '0'), sep: this.props.secsep !== undefined ? this.props.secsep : ':' },
             {
                 class: '-mil', int: 10 ** (6 - this.props.acc), foo: (time) => {
                     return time.getMilliseconds().toString().padStart(3, '0').substr(0, this.props.acc - 3);
                 },
-                sep: this.props.milsep || '.'
+                sep: this.props.milsep !== undefined ? this.props.milsep : '.'
             },
         ];
 
@@ -149,7 +149,7 @@ export class StopWatch extends Component {
         let minim = this.props.top || 0;
         let prevInt = this.ints[this.ints.length - (minim + 1)];
         let acc = this.getAcc();
-        for (let i = minim, max = acc >= decPoint ? decPoint : acc; i < max + 1; i++) {
+        for (let i = minim, max = acc >= decPoint ? decPoint + 1 : acc + 1; i < max; i++) {
             let padding = this.ints[i] < 86400000 ? 2 : 0;
             let timeValue = this.ints[i] < 1000 ? (this.state.time % 1000) : (Math.floor(this.state.time % prevInt / this.ints[i]));
             timeValue = timeValue.toString().padStart(padding, '0');
@@ -157,7 +157,7 @@ export class StopWatch extends Component {
             seggedTime.push(
                 <span className={"clock-" + this.segs[i]}>{sep}{timeValue}</span>
             )
-            sep = this.ints[i] > 1000 ? ":" : ".";
+            sep = this.ints[i] > 1000 ? (this.props.sep !== undefined ? this.props.sep : ":") : (this.props.msep !== undefined ? this.props.msep : ".");
             prevInt = this.ints[i];
         }
         return (
