@@ -31,7 +31,7 @@ class ClockWrap extends Component {
 
     render() {
         return (<div>
-            <Timer time={36000} acc={6} top={2} />
+            <Timer time={{ m: 1, s: 36 }} acc={4} top={2} />
             <StopWatch acc={4} top={2} />
             <button name="mil" onClick={this.handleClick}>toggle 24H</button>
             <button name="mer" onClick={this.handleClick}>toggle show meridian</button>

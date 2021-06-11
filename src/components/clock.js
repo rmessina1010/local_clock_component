@@ -182,7 +182,7 @@ export class Timer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            time: this.props.time || 0,
+            time: this.decodeTime(),
             start: true,
             done: true
         }
@@ -191,13 +191,25 @@ export class Timer extends Component {
         this.theTic = null;
     }
 
+    decodeTime() {
+        let time = parseInt(this.props.time);
+        if (!isNaN(time)) { return time; }
+        time = this.props.time.ms || 0;
+        time += (this.props.time.s || 0) * 1000;
+        time += (this.props.time.m || 0) * 60000;
+        time += (this.props.time.h || 0) * 3600000;
+        time += (this.props.time.d || 0) * 86400000;
+        time += (this.props.time.w || 0) * 604800000;
+        return time;
+    }
+
     reset = () => {
         if (this.theTic) {
             clearInterval(this.theTic);
             this.theTic = null;
         }
         this.setState({
-            time: this.props.time || 0,
+            time: this.decodeTime(),
             start: true,
             done: true
         });
@@ -211,6 +223,7 @@ export class Timer extends Component {
     }
 
     toggleStart = () => {
+        if (this.state.done) { this.reset(); }
         if (this.theTic) {
             clearInterval(this.theTic);
             this.theTic = null;
