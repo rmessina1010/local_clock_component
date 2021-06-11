@@ -160,13 +160,16 @@ export class StopWatch extends Component {
             sep = this.ints[i] > 1000 ? (this.props.sep !== undefined ? this.props.sep : ":") : (this.props.msep !== undefined ? this.props.msep : ".");
             prevInt = this.ints[i];
         }
+        let controls = this.props.noctrl ? null :
+            (<div className="timer-controls">
+                <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? 'Continue' : 'Start') : 'Pause'} </button>
+                <button type="button" className="reset" onClick={this.reset}>Reset</button>
+            </div>)
+
         return (
             <div className='clock-outer-wrap' {...this.props.Attrs}>
                 <div className="clock-inner-wrap" {...this.props.Attrs}>{seggedTime}</div>
-                <div className="timer-controls">
-                    <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? 'Continue' : 'Start') : 'Pause'} </button>
-                    <button type="button" className="reset" onClick={this.reset}>Reset</button>
-                </div>
+                {controls}
             </div>
         );
     }
@@ -243,13 +246,16 @@ export class Timer extends Component {
             sep = this.ints[i] > 1000 ? (this.props.sep !== undefined ? this.props.sep : ":") : (this.props.msep !== undefined ? this.props.msep : ".");
             prevInt = this.ints[i];
         }
+        let controls = this.props.noctrl ? null :
+            (<div className="timer-controls">
+                <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (!this.state.done ? 'Continue' : 'Start') : 'Pause'} </button>
+                <button type="button" className="reset" onClick={this.reset}>Reset</button>
+            </div>
+            );
         return (
             <div className='clock-outer-wrap' {...this.props.Attrs}>
                 <div className="clock-inner-wrap" {...this.props.Attrs}>{seggedTime}</div>
-                <div className="timer-controls">
-                    <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (!this.state.done ? 'Continue' : 'Start') : 'Pause'} </button>
-                    <button type="button" className="reset" onClick={this.reset}>Reset</button>
-                </div>
+                {controls}
             </div>
         );
     }
