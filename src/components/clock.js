@@ -144,7 +144,7 @@ export class StopWatch extends Component {
 
     render() {
         let seggedTime = [];
-        let sep = '';
+        let sep = "";
         let decPoint = this.ints.length - 2;// where 2 is the amount of digits before the decimal pt.
         let minim = this.props.top || 0;
         let prevInt = this.ints[this.ints.length - (minim + 1)];
@@ -152,7 +152,7 @@ export class StopWatch extends Component {
         for (let i = minim, max = acc >= decPoint ? decPoint + 1 : acc + 1; i < max; i++) {
             let padding = this.ints[i] < 86400000 ? 2 : 0;
             let timeValue = this.ints[i] < 1000 ? (this.state.time % 1000) : (Math.floor(this.state.time % prevInt / this.ints[i]));
-            timeValue = timeValue.toString().padStart(padding, '0');
+            timeValue = timeValue.toString().padStart(padding, "0");
             if (this.ints[i] < 1000) { timeValue = timeValue.substr(0, acc - decPoint + 1); }
             seggedTime.push(
                 <span className={"clock-" + this.segs[i]}>{sep}{timeValue}</span>
@@ -162,12 +162,15 @@ export class StopWatch extends Component {
         }
         let controls = this.props.noctrl ? null :
             (<div className="timer-controls">
-                <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? 'Continue' : 'Start') : 'Pause'} </button>
+                <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? "Continue" : "Start") : "Pause"} </button>
                 <button type="button" className="reset" onClick={this.reset}>Reset</button>
             </div>)
 
+        let runningClass = "stopwatch-ready";
+        if (this.state.time > 0) { runningClass = this.state.start ? "stopwatch-paused" : "stopwatch-running"; }
+
         return (
-            <div className='clock-outer-wrap' {...this.props.Attrs}>
+            <div className={"clock-outer-wrap " + runningClass} {...this.props.Attrs}>
                 <div className="clock-inner-wrap" {...this.props.Attrs}>{seggedTime}</div>
                 {controls}
             </div>
@@ -243,15 +246,21 @@ export class Timer extends Component {
 
     render() {
         let seggedTime = [];
-        let sep = '';
+        let sep = "";
         let decPoint = this.ints.length - 2;// where 2 is the amount of digits before the decimal pt.
         let minim = this.props.top || 0;
         let prevInt = this.ints[this.ints.length - (minim + 1)];
         let acc = this.getAcc();
+
+        let runningClass = "timer-ready";
+        if (!this.state.done) { runningClass = this.state.start ? "timer-paused" : "timer-running"; }
+        else if (this.state.time <= 0) { runningClass = "timer-done"; }
+
+
         for (let i = minim, max = acc >= decPoint ? decPoint + 1 : acc + 1; i < max; i++) {
             let padding = this.ints[i] < 86400000 ? 2 : 0;
             let timeValue = this.ints[i] < 1000 ? (this.state.time % 1000) : (Math.floor(this.state.time % prevInt / this.ints[i]));
-            timeValue = timeValue.toString().padStart(padding, '0');
+            timeValue = timeValue.toString().padStart(padding, "0");
             if (this.ints[i] < 1000) { timeValue = timeValue.substr(0, acc - decPoint + 1); }
             seggedTime.push(
                 <span className={"clock-" + this.segs[i]}>{sep}{timeValue}</span>
@@ -260,8 +269,8 @@ export class Timer extends Component {
             prevInt = this.ints[i];
         }
         let controls = this.props.noctrl ? null :
-            (<div className="timer-controls">
-                <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (!this.state.done ? 'Continue' : 'Start') : 'Pause'} </button>
+            (<div className={"timer-controls " + runningClass}>
+                <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (!this.state.done ? "Continue" : "Start") : "Pause"} </button>
                 <button type="button" className="reset" onClick={this.reset}>Reset</button>
             </div>
             );
