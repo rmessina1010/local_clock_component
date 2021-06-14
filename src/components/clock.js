@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class DigitalClock extends Component {
+class Clock extends Component {
     constructor(props) {
         super(props);
         this.startTime = this.props.start instanceof Date ? this.props.start : new Date();
@@ -144,6 +144,7 @@ export class StopWatch extends Component {
 
     render() {
         let seggedTime = [];
+        let bef, aft = null;
         let sep = "";
         let decPoint = this.ints.length - 2;// where 2 is the amount of digits before the decimal pt.
         let minim = this.props.top || 0;
@@ -169,10 +170,22 @@ export class StopWatch extends Component {
         let runningClass = "stopwatch-ready";
         if (this.state.time > 0) { runningClass = this.state.start ? "stopwatch-paused" : "stopwatch-running"; }
 
+        if (this.props.preCont) {
+            bef = React.cloneElement(this.props.preCont, { parState: this.state })
+        }
+        if (this.props.postCont) {
+            aft = React.cloneElement(this.props.postCont, { parState: this.state })
+        }
+
+
         return (
-            <div className={"clock-outer-wrap " + runningClass} {...this.props.Attrs}>
-                <div className="clock-inner-wrap" {...this.props.Attrs}>{seggedTime}</div>
-                {controls}
+            <div className={"stopwatch-outer-wrap" + runningClass} {...this.props.outAttrs}>
+                {bef}
+                <div className="stopwatch-mid-wrap" {...this.props.midAttrs}>
+                    <div className="stopwatch-inner-wrap" {...this.props.inAttrs}>{seggedTime}</div>
+                    {controls}
+                </div>
+                {aft}
             </div>
         );
     }
@@ -246,6 +259,7 @@ export class Timer extends Component {
 
     render() {
         let seggedTime = [];
+        let bef, aft = null;
         let sep = "";
         let decPoint = this.ints.length - 2;// where 2 is the amount of digits before the decimal pt.
         let minim = this.props.top || 0;
@@ -256,6 +270,12 @@ export class Timer extends Component {
         if (!this.state.done) { runningClass = this.state.start ? "timer-paused" : "timer-running"; }
         else if (this.state.time <= 0) { runningClass = "timer-done"; }
 
+        if (this.props.preCont) {
+            bef = React.cloneElement(this.props.preCont, { parState: this.state })
+        }
+        if (this.props.postCont) {
+            aft = React.cloneElement(this.props.postCont, { parState: this.state })
+        }
 
         for (let i = minim, max = acc >= decPoint ? decPoint + 1 : acc + 1; i < max; i++) {
             let padding = this.ints[i] < 86400000 ? 2 : 0;
@@ -275,12 +295,16 @@ export class Timer extends Component {
             </div>
             );
         return (
-            <div className='clock-outer-wrap' {...this.props.Attrs}>
-                <div className="clock-inner-wrap" {...this.props.Attrs}>{seggedTime}</div>
-                {controls}
+            <div className={"timer-outer-wrap" + runningClass} {...this.props.outAttrs}>
+                {bef}
+                <div className="timer-mid-wrap" {...this.props.midAttrs}>
+                    <div className="timer-inner-wrap" {...this.props.inAttrs}>{seggedTime}</div>
+                    {controls}
+                </div>
+                {aft}
             </div>
         );
     }
 }
 
-export default DigitalClock;
+export default Clock;
