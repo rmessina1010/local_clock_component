@@ -36,7 +36,7 @@ class ClockWrap extends Component {
             <button name="mil" onClick={this.handleClick}>toggle 24H</button>
             <button name="mer" onClick={this.handleClick}>toggle show meridian</button>
             <button name="date" onClick={this.handleDate}>toggle date info</button>
-            <Clock mer={this.state.mer} mil={this.state.mil} acc={3} date={this.state.date} postCont={<TestElement x="?!!!" />} />
+            <Clock mer={this.state.mer} mil={this.state.mil} acc={3} date={this.state.date} aft={<TestElement x="?!!!" />} />
         </div>)
     }
 

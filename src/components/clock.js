@@ -1,5 +1,26 @@
 import React, { Component } from 'react';
 
+export function ClockFace({ state, cont, classes, attrs, ctrl, type = "clock" }) {
+    let bef = cont.bef ? React.cloneElement(cont.bef, { parState: state }) : null;
+    let aft = cont.aft ? React.cloneElement(cont.aft, { parState: state }) : null;
+    let outClass = type + `-outer-wrap ${classes.pm} ${classes.hr} ${classes.day} ${classes.mo} ${classes.mlt} `;
+    let main = <div className={type + "-inner-wrap"} {...attrs.in}>{cont.parts}</div>;
+    return (
+        <div className={outClass} {...attrs.out}>
+            {bef}
+            {ctrl ?
+                (<div className={type + "-mid-wrap"} {...attrs.mid}>
+                    {main}
+                    {ctrl}
+                </div>)
+                : main
+            }
+            {aft}
+        </div>
+    );
+}
+
+
 class Clock extends Component {
     constructor(props) {
         super(props);
@@ -65,18 +86,7 @@ class Clock extends Component {
 
     render() {
         let parts = [];
-        let bef, aft = null;
-        if (this.props.preCont) {
-            bef = React.cloneElement(this.props.preCont, { parState: this.state })
-        }
-        if (this.props.postCont) {
-            aft = React.cloneElement(this.props.postCont, { parState: this.state })
-        }
-
         let pmClass = this.state.time.getHours() > 11 ? 'is-pm' : 'is-am';
-        let hourClass = 'hour-' + this.state.time.getHours();
-        let dayClass = 'day-' + this.state.time.getDay();
-        let monthClass = 'month-' + this.state.time.getMonth();
 
         for (let i = this.props.date ? 0 : 1, rng = this.state.acc < 4 ? this.state.acc : 4; i <= rng; i++) {
             let dobj = this.depths[i];
@@ -88,13 +98,28 @@ class Clock extends Component {
         if (this.props.mer) {
             parts.push((<span key='clock-mer' className='clock-mer'> {this.props.mil ? 'hours' : (pmClass === 'is-pm' ? 'pm' : 'am')}</span>))
         }
-        return (
-            <div className={`clock-outer-wrap ${pmClass} ${hourClass} ${dayClass} ${monthClass}`} {...this.props.outerAttrs}>
-                {bef}
-                <div className='clock-inner-wrap'{...this.props.innerAttrs}>{parts}</div>
-                {aft}
-            </div>
-        )
+        let renderData = {
+            state: this.state,
+            type: 'clock',
+            classes: {
+                pm: pmClass,
+                hr: 'hour-' + this.state.time.getHours(),
+                day: 'day-' + this.state.time.getDay(),
+                mo: 'month-' + this.state.time.getMonth(),
+                mlt: this.props.mil ? 'mil-time' : null
+            },
+            attrs: {
+                out: this.props.outAttrs,
+                in: this.props.inAttrs
+            },
+            cont: {
+                parts: parts,
+                bef: this.props.bef,
+                aft: this.props.aft
+            },
+            rprops: this.props.rprops
+        }
+        return (typeof this.props.render === 'function' ? this.props.render(renderData) : ClockFace(renderData));
     }
 }
 
