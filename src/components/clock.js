@@ -172,12 +172,12 @@ export class StopWatch extends Component {
 
     render() {
         let seggedTime = [];
-        let bef, aft = null;
         let sep = "";
         let decPoint = this.ints.length - 2;// where 2 is the amount of digits before the decimal pt.
         let minim = this.props.top || 0;
         let prevInt = this.ints[this.ints.length - (minim + 1)];
         let acc = this.getAcc();
+
         for (let i = minim, max = acc >= decPoint ? decPoint + 1 : acc + 1; i < max; i++) {
             let padding = this.ints[i] < 86400000 ? 2 : 0;
             let timeValue = this.ints[i] < 1000 ? (this.state.time % 1000) : (Math.floor(this.state.time % prevInt / this.ints[i]));
@@ -189,37 +189,37 @@ export class StopWatch extends Component {
             sep = this.ints[i] > 1000 ? (this.props.sep !== undefined ? this.props.sep : ":") : (this.props.msep !== undefined ? this.props.msep : ".");
             prevInt = this.ints[i];
         }
-        let controls = this.props.noctrl ? null :
-            (<div className="timer-controls">
-                <button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? "Continue" : "Start") : "Pause"} </button>
-                <button type="button" className="reset" onClick={this.reset}>Reset</button>
-            </div>)
+
 
         let runningClass = "stopwatch-ready";
         if (this.state.time > 0) { runningClass = this.state.start ? "stopwatch-paused" : "stopwatch-running"; }
 
-        if (this.props.preCont) {
-            bef = React.cloneElement(this.props.preCont, { parState: this.state })
-        }
-        if (this.props.postCont) {
-            aft = React.cloneElement(this.props.postCont, { parState: this.state })
-        }
+        let renderData = {
+            type: "stopwatch",
+            rprops: this.props.rprops,
+            state: this.state,
+            classes: [runningClass],
+            cont: {
+                bef: this.props.bef,
+                aft: this.props.aft,
+                parts: seggedTime
+            },
+            attrs: {
+                out: this.props.outAttrs,
+                mid: this.props.midAttrs,
+                in: this.props.inAttrs
+            },
+            ctrl: this.props.noctrl ? null : {
+                toggle: (<button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (this.state.time > 0 ? "Continue" : "Start") : "Pause"} </button>
+                ),
+                reset: (<button type="button" className="reset" onClick={this.reset}>Reset</button>)
+            }
+        };
 
+        return (typeof this.props.render === 'function' ? this.props.render(renderData) : ClockFace(renderData));
 
-        return (
-            <div className={"stopwatch-outer-wrap" + runningClass} {...this.props.outAttrs}>
-                {bef}
-                <div className="stopwatch-mid-wrap" {...this.props.midAttrs}>
-                    <div className="stopwatch-inner-wrap" {...this.props.inAttrs}>{seggedTime}</div>
-                    {controls}
-                </div>
-                {aft}
-            </div>
-        );
     }
 }
-
-
 
 export class Timer extends Component {
 
@@ -328,7 +328,6 @@ export class Timer extends Component {
                 toggle: (<button type="button" className="start-toggle" onClick={this.toggleStart}>{this.state.start ? (!this.state.done ? "Continue" : "Start") : "Pause"} </button>
                 ),
                 reset: (<button type="button" className="reset" onClick={this.reset}>Reset</button>)
-
             }
         };
 
