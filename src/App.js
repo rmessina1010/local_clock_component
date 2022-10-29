@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import ClockWrap from './components/clockWrap';
+import {Clock} from './components/clockFunctional';
+import {Secs, NewClock, ClockFace1} from './components/timefaces';
 
 function App() {
   return (
@@ -8,6 +10,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <ClockWrap />
+        <NewClock depth={0} face={ClockFace1}/>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
